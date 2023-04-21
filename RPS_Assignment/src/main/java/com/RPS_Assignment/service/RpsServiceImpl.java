@@ -5,14 +5,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
-@Log4j2
+
+import static org.apache.logging.log4j.util.StringBuilders.equalsIgnoreCase;
+
 @Service
+@Log4j2
 public class RpsServiceImpl implements RpsService{
-    private static final String[] MOVES = {"Rock", "Paper", "Scissors"};
+    private static final List<String> MOVES = Arrays.asList("Rock", "Paper", "Scissors");
+
 
     @Override
     public ResponseEntity<String> getGameResult(String playerMove) {
+        if(!MOVES.contains(playerMove)){
+            return new ResponseEntity<>("Give an value present in Rock , Paper ,Scissors",HttpStatus.BAD_REQUEST);
+
+        }
         log.info("Calculating Random computer move");
         String computerMove = generateComputerMove();
         log.info("Random computer Move calculated as: "+computerMove);
@@ -38,8 +49,8 @@ public class RpsServiceImpl implements RpsService{
 
     private String generateComputerMove() {
         Random random = new Random();
-        int computerMoveIndex = random.nextInt(MOVES.length);
-        return MOVES[computerMoveIndex];
+        int computerMoveIndex = random.nextInt(MOVES.size());
+        return MOVES.get(computerMoveIndex);
     }
 
 }

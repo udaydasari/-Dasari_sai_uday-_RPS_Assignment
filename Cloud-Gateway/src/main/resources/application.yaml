@@ -1,0 +1,28 @@
+server:
+  port: 9090
+spring:
+  redis:
+    host: redis
+    port: 6379
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:9296
+  cloud:
+    gateway:
+      routes:
+        - id : RPS_GAME
+          uri: lb://RPS_GAME
+          predicates:
+            - Path=/rps/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: RPS_GAME
+                fallbackuri: forward:/gameRPSServiceFallBack
+            - name: RequestRateLimiter
+              args:
+                  redis-rate-limiter.replenishRate: 1
+                  redis-rate-limited.burstCapacity: 1
+
+
