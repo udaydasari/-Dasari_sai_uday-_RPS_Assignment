@@ -1,10 +1,10 @@
 server:
-  port: 8080
+  port: 8083
 spring:
   application:
     name: RPS_GAME
   config:
-    import: configserver:http://localhost:9296
+    import: configserver:http://localhost:8081
 
 
 resilience4j:

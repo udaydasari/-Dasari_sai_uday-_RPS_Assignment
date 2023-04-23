@@ -1,0 +1,14 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:8081
+  cloud:
+    gateway:
+      routes:
+        - id: RPS_GAME
+          uri: http://localhost:8083
+          predicates:
+            - Path=/rps/**
