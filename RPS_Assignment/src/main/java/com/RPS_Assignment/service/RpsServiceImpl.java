@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 import static org.apache.logging.log4j.util.StringBuilders.equalsIgnoreCase;
 
@@ -16,41 +13,43 @@ import static org.apache.logging.log4j.util.StringBuilders.equalsIgnoreCase;
 @Log4j2
 public class RpsServiceImpl implements RpsService{
     private static final List<String> MOVES = Arrays.asList("Rock", "Paper", "Scissors");
+    private static final Random RANDOM = new Random();
 
 
     @Override
     public ResponseEntity<String> getGameResult(String playerMove) {
-        if(!MOVES.contains(playerMove)){
-            return new ResponseEntity<>("Give an value present in Rock , Paper ,Scissors",HttpStatus.BAD_REQUEST);
 
-        }
+
         log.info("Calculating Random computer move");
-        String computerMove = generateComputerMove();
+
+        int index = RANDOM.nextInt(MOVES.size());
+
+        String computerMove = MOVES.get(index);
         log.info("Random computer Move calculated as: "+computerMove);
         log.info("Calculating the winner based on playerMove and ComputerMove");
         String result= "";//new StringBuilder("");
-        if (playerMove.equals("Rock") && computerMove.equals("Scissors")) {
-            result="Player wins";
-        } else if (playerMove.equals("Scissors") && computerMove.equals("Paper")) {
-            result="Player wins";
-        } else if (playerMove.equals("Paper") && computerMove.equals("Rock")) {
-            result="Player wins";
-        } else if (computerMove.equals("Rock") && playerMove.equals("Scissors")) {
-            result="Computer wins";
-        } else if (computerMove.equals("Scissors") && playerMove.equals("Paper")) {
-            result="Computer wins";
-        } else if (computerMove.equals("Paper") && playerMove.equals("Rock")) {
-            result="Computer wins";
+
+
+
+        Map<String, String> winningMoves = new HashMap<>();
+        winningMoves.put("Rock", "Scissors");
+        winningMoves.put("Scissors", "Paper");
+        winningMoves.put("Paper", "Rock");
+
+        if (winningMoves.get(playerMove).equals(computerMove)) {
+            result= "Player wins";
+        } else if (winningMoves.get(computerMove).equals(playerMove)) {
+            result=  "Computer wins";
         } else {
-            result= "Its an tie";
+            result=  "It's a tie";
         }
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
-    private String generateComputerMove() {
-        Random random = new Random();
-        int computerMoveIndex = random.nextInt(MOVES.size());
-        return MOVES.get(computerMoveIndex);
-    }
+//    public String generateComputerMove() {
+//        Random random = new Random();
+//        int computerMoveIndex = random.nextInt(MOVES.size());
+//        return MOVES.get(computerMoveIndex);
+//    }
 
 }

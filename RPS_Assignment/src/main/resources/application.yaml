@@ -5,8 +5,9 @@ spring:
     name: RPS_GAME
   config:
     import: configserver:http://localhost:8081
-
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 resilience4j:
   circuitbreaker:
     instance:
